@@ -1,11 +1,28 @@
 const express = require("express");
 const app = express();
-const port = 5001;
+
+const db = require("./db");
+
+const PORT = 5001;
 
 app.get("/", (req, res) => {
-	res.json({ message: "Hello World!" });
+	res.json({ message: "Hello World from my first AWS instance!" });
 });
 
-app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
+app.get("/users", (req, res) => {
+	const query = `SELECT * FROM users;`;
+
+	try {
+		db.pool.query(query, (err, result, fields) => {
+			res.json({
+				users: result,
+			});
+		});
+	} catch (e) {
+		res.json({ err: e });
+	}
+});
+
+app.listen(PORT, () => {
+	console.log(`Example app listening on port ${PORT}`);
 });
